@@ -13,6 +13,7 @@ const Highlight = ({ el }) => {
   useEffect(() => {
     if (el) {
       map.flyTo([el.lat, el.lng], 10);
+      map.openPopup(`${el.location} - ${el.magnitude.toFixed(2)}`, [el.lat, el.lng])
     } else {
       map.flyTo([0, 0], 3);
     }
@@ -36,11 +37,24 @@ const Map = ({ data, highlight }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {data.map((item) => {
-          return (
-            <CircleMarker center={[item.lat, item.lng]} fillOpacity={100} fillColor={!highlight || highlight.id != item.id ? "blue" : "blue"}>
-              <Popup>{`${item.location} - ${item.magnitude}`}</Popup>
-            </CircleMarker>
-          );
+          if (!highlight || highlight.id !== item.id) {
+            return (
+              <CircleMarker
+                center={[item.lat, item.lng]}
+              >
+                <Popup>{`${item.location} - ${item.magnitude}`}</Popup>
+              </CircleMarker>
+            );
+          } else {
+            return (
+              <CircleMarker
+                center={[item.lat, item.lng]}
+                fillOpacity={100}
+              >
+                <Popup>{`${item.location} - ${item.magnitude.toFixed(2)}`}</Popup>
+              </CircleMarker>
+            );
+          }
         })}
         <Highlight el={highlight} />
       </MapContainer>
