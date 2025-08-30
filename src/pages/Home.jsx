@@ -1,35 +1,62 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { formatDate } from "../helpers/utils";
+import Map from "../components/Map";
+
 import api from "../helpers/api";
 
 const Home = () => {
   const [data, setData] = useState([]);
+  const [activeListItem, setActiveListItem] = useState(null);
 
   useEffect(() => {
-    api.get("/query").then((res) => {
-        const newData = res.data.features.map((item) => {
-            return({
-                location: item.properties.place,
-                magnitude: item.properties.mag,
-                time: item.properties.time
-            })
-        })
-
-        setData(newData)
-    });
+    getData();
   }, []);
 
+  const getData = () => {
+    api.get("/query").then((res) => {
+      const newData = res.data.features.map((item, index) => {
+        return {
+          id: item.id,
+          lat: item.geometry.coordinates[1],
+          lng: item.geometry.coordinates[0],
+          location: item.properties.place,
+          magnitude: item.properties.mag,
+          time: item.properties.time,
+        };
+      });
+
+      setData([...newData]);
+    });
+  };
+
   return (
-    <div>
-      <div>
+    <div id="home-container" className="flex overflow-hidden">
+      <div
+        id="earthquackes-list"
+        className="w-[350px] max-h-[100dvh] overflow-auto"
+      >
         <ul className="list">
-            {data.map((item) => {
-                return(
-                    <li className="list-row">
-                        {item.location}
-                    </li>
-                )
-            })}
+          <li className="list-row">LATEST EARTHQUAKES</li>
+          {data.map((item) => {
+            return (
+              <li className="list-row" key={item.id}>
+                <button
+                  onClick={() => setActiveListItem(item)}
+                  className="w-full cursor-pointer flex justify-between text-start"
+                >
+                  <div className="">
+                    <div>{item.location}</div>
+                    <div>{formatDate(item.time)}</div>
+                  </div>
+                  <div>{item.magnitude}</div>
+                </button>
+              </li>
+            );
+          }) || null}
         </ul>
+      </div>
+      <div className="h-[100dvh] w-[calc(100dvw-350px)]">
+        <Map data={data} highlight={activeListItem}/>
       </div>
     </div>
   );
