@@ -28,6 +28,7 @@ const Map = ({ data, highlight }) => {
       <MapContainer
         className="h-full w-full"
         center={[0, 0]}
+        zoomControl={false}
         zoom={3}
         scrollWheelZoom={false}
         minZoom={2}

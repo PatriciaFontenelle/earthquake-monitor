@@ -30,9 +30,9 @@ const Home = () => {
   };
 
   return (
-    <div id="home-container" className="flex overflow-hidden">
+    <div id="home-container" className="flex overflow-hidden z-2">
       <ListDrawer data={data} activeListItem={activeListItem} setActiveListItem={setActiveListItem} />
-      <div className="h-[100dvh] w-[calc(100dvw-350px)]">
+      <div className="h-[100dvh] w-[100dvw] z-0 md:w-[calc(100dvw-350px)] md:ml-[350px]">
         <Map data={data} highlight={activeListItem}/>
       </div>
     </div>

@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+@theme {
+  --animate-drawer: .5s ease-in-out;
+}
+
 .active {
   @apply bg-amber-500;
 }
