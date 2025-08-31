@@ -36,10 +36,10 @@ const Map = ({ data, highlight }) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {data.map((item) => {
+        {data.map((item, index) => {
           if (!highlight || highlight.id !== item.id) {
             return (
-              <CircleMarker
+              <CircleMarker key={index}
                 center={[item.lat, item.lng]}
               >
                 <Popup>{`${item.location} - ${item.magnitude}`}</Popup>
@@ -47,7 +47,7 @@ const Map = ({ data, highlight }) => {
             );
           } else {
             return (
-              <CircleMarker
+              <CircleMarker key={index}
                 center={[item.lat, item.lng]}
                 fillOpacity={100}
               >
