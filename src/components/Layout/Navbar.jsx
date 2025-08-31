@@ -1,18 +1,21 @@
 import { Outlet } from "react-router";
-import { User, Menu } from "react-feather";
+import { User, Menu, Moon, Sun } from "react-feather";
 import { useNav } from "../../contexts/NavContext";
 
 const Navbar = () => {
   const { setListOpened } = useNav();
 
   return (
-    <div>
-      <div className="navbar bg-base-200 shadow-sm">
+    <div className="max-h-[100dvh] overflow-hidden">
+      <div className="navbar bg-base-200 shadow-sm z-10">
         <div
           id="nav-left"
           className="w-15 flex items-center px-2 md:flex-1 md:px-4"
         >
-          <button className="icon-btn md:hidden" onClick={() => setListOpened((prev) => !prev)}>
+          <button
+            className="icon-btn md:hidden"
+            onClick={() => setListOpened((prev) => !prev)}
+          >
             <Menu />
           </button>
           <NavLogo className="hidden md:block" />
@@ -41,7 +44,13 @@ const Navbar = () => {
                 <a>Manage Profiles</a>
               </li>
               <li>
-                <a>Theme</a>
+                <div>
+                  <label className="toggle text-base-content">
+                    <input type="checkbox" />
+                    {/* <Sun size={10} aria-label="enabled" />
+                    <Moon aria-label="disabled" /> */}
+                  </label>
+                </div>
               </li>
               <li>
                 <a>Logout</a>

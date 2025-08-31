@@ -2,7 +2,7 @@
 @plugin "daisyui";
 
 @theme {
-  --animate-drawer: .5s ease-in-out;
+  --animate-drawer: transi;
 }
 
 .active {
@@ -10,5 +10,5 @@
 }
 
 .icon-btn {
-  @apply bg-transparent border-0 outline-0;
+  @apply bg-transparent border-0 outline-0 px-0 shadow-none;
 }
