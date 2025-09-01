@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import Map from "../components/Map";
 import ListDrawer from "../components/ListDrawer";
 
-import api from "../helpers/api";
 import { useData } from "../contexts/dataContext";
 
 const Home = () => {
-  const {data, setData, filters} = useData();
+  const {data, getData} = useData();
   const [activeListItem, setActiveListItem] = useState(null);
 
   useEffect(() => {
@@ -20,29 +19,6 @@ const Home = () => {
       clearInterval(getRealtimeData);
     };
   }, []);
-
-  useEffect(() => {
-    getData();
-  }, [filters])
-
-  const getData = () => {
-    api.get("/query", {
-      params: filters
-    }).then((res) => {
-      const newData = res.data.features.map((item, index) => {
-        return {
-          id: item.id,
-          lat: item.geometry.coordinates[1],
-          lng: item.geometry.coordinates[0],
-          location: item.properties.place,
-          magnitude: item.properties.mag,
-          time: item.properties.time,
-        };
-      });
-
-      setData([...newData]);
-    });
-  };
 
   return (
     <div id="home-container" className="flex overflow-hidden z-2">

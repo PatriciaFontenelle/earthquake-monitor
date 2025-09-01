@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNav } from "../contexts/NavContext";
 import { formatDate, toIso08601 } from "../helpers/utils";
 import { Filter, X } from "react-feather";
+import { useData } from "../contexts/dataContext";
 
 const ListDrawer = ({ data, activeListItem, setActiveListItem }) => {
   const { listOpened, setListOpened } = useNav();
@@ -20,12 +21,12 @@ const ListDrawer = ({ data, activeListItem, setActiveListItem }) => {
           : setListOpened
           ? "left-[-100dvw] md:left-[-350px]"
           : "left-[-200dvw]"
-      } transition-[left] duration-300 ease-in-out flex absolute top-[63px] h-[calc(100dvh-63px)] overflow-x-hidden z-6 md:top-[64px]`}
+      } transition-[left] duration-300 ease-in-out flex absolute top-[63px] h-[calc(100dvh-63px)] max-h-[calc(100dvh-64px)] overflow-hidden z-6 bg-base-100 md:top-[64px]`}
     >
-      <FilterDrawer show={filterOpened} setShow={setFilterOpened} />
+      <FilterDrawer setShow={setFilterOpened} />
       <div
         id="earthquackes-list"
-        className={`w-[100dvw] max-h-[calc(100dvh-64px)] overflow-auto bg-base-100 animate-[--animate-drawer] md:w-[350px] md:left-0 md:top-[64px]`}
+        className={`w-[100dvw] overflow-auto bg-base-100 animate-[--animate-drawer] md:w-[350px] md:left-0 md:top-[64px]`}
       >
         <ul className="list">
           <li className="list-row font-bold">
@@ -34,6 +35,7 @@ const ListDrawer = ({ data, activeListItem, setActiveListItem }) => {
               <button
                 onClick={() => setFilterOpened((prev) => !prev)}
                 className="btn btn-sm"
+                disabled={filterOpened}
               >
                 <Filter size={15} />
                 <span>Filter</span>
@@ -69,11 +71,25 @@ const ListDrawer = ({ data, activeListItem, setActiveListItem }) => {
   );
 };
 
-const FilterDrawer = ({ show, setShow }) => {
-  const [filters, setFilters] = useState({});
+const FilterDrawer = ({ setShow }) => {
+  const { initialFilterValues, filters, setFilters } = useData();
+
+  const updateFilters = (item) => {
+    if (item.name == "maxradiuskm" && item.value > 20000) item.value = 20000;
+
+    if (item.name == "latitude" && item.value < -90) item.value = -90;
+    if (item.name == "latitude" && item.value > 90) item.value = 90;
+
+    if (item.name == "longitude" && item.value < -180) item.value = -180;
+    if (item.name == "longitude" && item.value > 180) item.value = 180;
+
+    setFilters({ ...filters, [item.name]: item.value });
+  };
 
   return (
-    <div className={`min-w-[100dvw] bg-base-100 p-4 md:w-[350px] md:min-w-0`}>
+    <div
+      className={`min-w-[100dvw] bg-base-100 p-4 md:w-[350px] overflow-x-hidden overflow-y-auto md:min-w-0`}
+    >
       <div className="flex justify-between items-center">
         <span className="text-[.875rem] font-bold">FILTER OPTIONS</span>
         <button onClick={() => setShow(false)} className="btn icon-btn">
@@ -88,18 +104,18 @@ const FilterDrawer = ({ show, setShow }) => {
           <input
             type="datetime-local"
             className="input input-sm"
-            onChange={(e) =>
-              updateFilters("starttime", toIso08601(e.target.value))
-            }
+            name="starttime"
+            value={filters.starttime}
+            onChange={(e) => updateFilters(e.target)}
           />
 
           <label className="label">End Date</label>
           <input
             type="datetime-local"
             className="input input-sm"
-            onChange={(e) =>
-              updateFilters("endtime", toIso08601(e.target.value))
-            }
+            name="endtime"
+            value={filters.endtime}
+            onChange={(e) => updateFilters(e.target)}
           />
         </fieldset>
 
@@ -107,24 +123,30 @@ const FilterDrawer = ({ show, setShow }) => {
           <legend className="fieldset-legend">Magnitude</legend>
 
           <div>
-            <label className="label">Min</label>
+            <label className="label">{`Min - ${filters.minmagnitude}`}</label>
             <input
               type="range"
-              min={0}
-              max={9}
+              min="0"
+              max="9"
+              step=".1"
               className="range range-sm [--range-fill:0]"
-              // onChange={(e) => updateFilters("minmagnitude", e.target.value)}
+              name="minmagnitude"
+              value={filters.minmagnitude}
+              onChange={(e) => updateFilters(e.target)}
             />
           </div>
 
           <div>
-            <label className="label">Max</label>
+            <label className="label">{`Max - ${filters.maxmagnitude}`}</label>
             <input
               type="range"
-              min={1}
-              max={10}
+              min="1"
+              max="10"
+              step=".1"
               className="range range-sm [--range-fill:0]"
-              // onChange={(e) => updateFilters("maxmagnitude", e.target.value)}
+              name="maxmagnitude"
+              value={filters.maxmagnitude}
+              onChange={(e) => updateFilters(e.target)}
             />
           </div>
         </fieldset>
@@ -134,37 +156,72 @@ const FilterDrawer = ({ show, setShow }) => {
 
           <label className="label">Latitude</label>
           <input
-            type="text"
+            type="number"
             className="input input-sm"
-            // onChange={(e) => updateFilters("latitude", e.target.value)}
+            name="latitude"
+            min="-90"
+            max="90"
+            step=".000001"
+            value={filters.latitude}
+            onChange={(e) => updateFilters(e.target)}
           />
 
           <label className="label">Longitude</label>
           <input
-            type="text"
+            type="number"
             className="input input-sm"
-            // onChange={(e) => updateFilters("longitude", e.target.value)}
+            name="longitude"
+            min="-180"
+            max="180"
+            step=".000001"
+            value={filters.longitude}
+            onChange={(e) => updateFilters(e.target)}
           />
 
           <label className="label">Radius</label>
-          <div className="flex">
+          <div className="flex relative">
             <input
               type="number"
-              min={1}
-              max={20000}
-              step={0.1}
-              className="input validator input-sm rounded-br-none rounded-tr-none border-r-0"
-              // onChange={(e) => updateFilters("maxradiuskm", e.target.value)}
+              min="1"
+              max="20000"
+              step="0.1"
+              className="input input-sm"
+              name="maxradiuskm"
+              value={filters.maxradiuskm}
+              onChange={(e) => updateFilters(e.target)}
             />
-            <div className="label p-2 bg-base-200 h-[32px] border-[1px] border-[rgba(0,0,0,0.2)] rounded-r-[4px]">
+            <div className="label p-2 bg-base-200 h-[32px] border-[1px] border-[rgba(0,0,0,0.2)] rounded-r-[4px] absolute right-0">
               km
             </div>
           </div>
-          <p className="validator-hint">Must be between be 1 to 2000</p>
+          <p className="label -mt-1 ml-1 font-semibold text-[.65rem]">
+            Max: 20000km
+          </p>
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Order by</legend>
+          <select
+            className="select select-sm"
+            name="orderby"
+            value={filters.orderby}
+            onChange={(e) => updateFilters(e.target)}
+          >
+            <option value="time">Time</option>
+            <option value="time-asc">Time Asc.</option>
+            <option value="magnitude">Magnitude</option>
+            <option value="magnitude-asc">Magnitude Asc.</option>
+          </select>
         </fieldset>
       </div>
-      <div id="#filters-footer" className="flex gap-2 mt-4 justify-end">
-        <button className="btn btn-sm">Clear Filters</button>
+
+      <div id="#filters-footer" className="flex gap-2 my-4 justify-end">
+        <button
+          onClick={() => setFilters(initialFilterValues)}
+          className="btn btn-sm"
+        >
+          Clear Filters
+        </button>
         <button type="submit" className="btn btn-outline btn-sm">
           Apply
         </button>
