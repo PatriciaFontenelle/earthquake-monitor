@@ -7,37 +7,44 @@ import {
   useMap,
 } from "react-leaflet";
 import { X } from "react-feather";
+import { useNav } from "@/contexts/navContext";
+import { useData } from "@/contexts/dataContext";
 
-const Highlight = ({ el }) => {
+const Highlight = () => {
+  const { highlightedItem } = useNav();
   const map = useMap();
 
   useEffect(() => {
-    if (el) {
-      map.flyTo([el.lat, el.lng], 10);
-      map.openPopup(`${el.location} - ${el.magnitude.toFixed(2)}`, [
-        el.lat,
-        el.lng,
-      ]);
+    if (highlightedItem) {
+      map.flyTo([highlightedItem.lat, highlightedItem.lng], 10);
+      map.openPopup(
+        `${highlightedItem.location} - ${highlightedItem.magnitude.toFixed(2)}`,
+        [highlightedItem.lat, highlightedItem.lng]
+      );
     } else {
       map.flyTo([0, 0], 3);
       map.closePopup();
     }
-  }, [el]);
+  }, [highlightedItem]);
 
   return null;
 };
 
-const Map = ({ data, highlight, setHighlight }) => {
+const Map = () => {
+  const { highlightedItem, setHighlightedItem } = useNav();
+  const { data } = useData();
+
   return (
     <div className="h-full w-full relative">
-      { highlight &&
+      {highlightedItem && (
         <button
-          onClick={() => setHighlight(null)}
-          className="absolute right-[50%] bottom-10 btn btn-circle btn-lg z-5"
+          onClick={() => setHighlightedItem(null)}
+          id="cancel-selection-btn"
+          className="absolute right-[50%] bottom-10 btn btn-circle btn-lg z-5 focus:border-base-content focus:border-2"
         >
           <X />
         </button>
-      }
+      )}
       <MapContainer
         className="h-full w-full z-4"
         center={[0, 0]}
@@ -51,7 +58,7 @@ const Map = ({ data, highlight, setHighlight }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {data.map((item, index) => {
-          if (!highlight || highlight.id !== item.id) {
+          if (!highlightedItem || highlightedItem.id !== item.id) {
             return (
               <CircleMarker key={index} center={[item.lat, item.lng]}>
                 <Popup>{`${item.location} - ${item.magnitude}`}</Popup>
@@ -71,7 +78,7 @@ const Map = ({ data, highlight, setHighlight }) => {
             );
           }
         })}
-        <Highlight el={highlight} />
+        <Highlight />
       </MapContainer>
     </div>
   );

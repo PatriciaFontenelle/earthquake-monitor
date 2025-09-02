@@ -1,18 +1,37 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   subtractDaysFromDate,
   toIso08601NoTZ,
   toIso08601,
-} from "../helpers/utils";
-import api from "../helpers/api";
+} from "@/helpers/utils";
+import api from "@/helpers/api";
 
 const DataContext = createContext();
 
 export const useData = () => {
   const context = useContext(DataContext);
-  const { data, setData, filters, setFilters, initialFilterValues, getData } =
-    context;
-  return { data, setData, filters, setFilters, initialFilterValues, getData };
+  const {
+    data,
+    setData,
+    filters,
+    setFilters,
+    initialFilterValues,
+    filterApplied,
+    setFilterApplied,
+    fetchData,
+    removeFilters
+  } = context;
+  return {
+    data,
+    setData,
+    filters,
+    setFilters,
+    initialFilterValues,
+    filterApplied,
+    setFilterApplied,
+    fetchData,
+    removeFilters
+  };
 };
 
 export const DataProvider = ({ children }) => {
@@ -20,33 +39,54 @@ export const DataProvider = ({ children }) => {
   const startDate = subtractDaysFromDate(new Date(), 30);
 
   const initialFilterValues = {
-    endtime: toIso08601NoTZ(endDate),
-    starttime: toIso08601NoTZ(startDate),
-    minmagnitude: 0,
-    maxmagnitude: 10,
+    endTime: toIso08601NoTZ(endDate),
+    startTime: toIso08601NoTZ(startDate),
+    minMagnitude: 0,
+    maxMagnitude: 10,
     latitude: "",
     longitude: "",
-    maxradiuskm: 20000,
-    orderby: "time",
+    maxRadiusKm: 20000,
+    orderBy: "time",
   };
 
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState(initialFilterValues);
+  const [filterApplied, setFilterApplied] = useState(false);
 
-  const getData = () => {
-    const params = { ...filters };
-    params.starttime = toIso08601(params.starttime);
-    params.endtime = toIso08601(params.endtime);
+  useEffect(() => {
+    fetchData();
+    
+    if (!filterApplied) {
+      const getRealtimeData = setInterval(() => {
+        fetchData();
+      }, 120000);
 
-    if (!params.latidude || !params.longitude) {
-        delete params.latidude,
-        delete params.longitude,
-        delete params.maxradiuskm;
+      return () => {
+        clearInterval(getRealtimeData);
+      };
     }
+  }, [filterApplied]);
+
+  const removeFilters = () => {
+    setFilterApplied(false);
+    setFilters(initialFilterValues);
+  };
+
+  const fetchData = () => {
+    const applyLocalFilter = filters.latitude && filters.longitude;
 
     api
       .get("/query", {
-        params: params,
+        params: {
+          endtime: toIso08601(filters.endTime),
+          starttime: toIso08601(filters.startTime),
+          minmagnitude: filters.minMagnitude,
+          maxmagnitude: filters.maxMagnitude,
+          latitude: applyLocalFilter ? filters.latitude : null,
+          longitude: applyLocalFilter ? filters.longitude : null,
+          maxradiuskm: applyLocalFilter ? filters.maxRadiusKm : null,
+          orderby: filters.orderBy,
+        },
       })
       .then((res) => {
         const newData = res.data.features.map((item) => {
@@ -72,7 +112,10 @@ export const DataProvider = ({ children }) => {
         filters,
         setFilters,
         initialFilterValues,
-        getData,
+        filterApplied,
+        setFilterApplied,
+        fetchData,
+        removeFilters
       }}
     >
       {children}

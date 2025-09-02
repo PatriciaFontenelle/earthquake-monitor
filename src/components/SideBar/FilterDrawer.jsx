@@ -1,81 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNav } from "../contexts/NavContext";
-import { formatDate, toIso08601 } from "../helpers/utils";
-import { Filter, X } from "react-feather";
-import { useData } from "../contexts/dataContext";
+import { X } from "react-feather";
+import { useData } from "@/contexts/dataContext";
 
-const ListDrawer = ({ data, activeListItem, setActiveListItem }) => {
-  const { listOpened, setListOpened } = useNav();
-  const [filterOpened, setFilterOpened] = useState(false);
-
-  const selectItem = (item) => {
-    setActiveListItem(item);
-    setListOpened(false);
-  };
-
-  return (
-    <div
-      className={`${
-        filterOpened
-          ? "left-0"
-          : setListOpened
-          ? "left-[-100dvw] md:left-[-350px]"
-          : "left-[-200dvw]"
-      } transition-[left] duration-300 ease-in-out flex absolute top-[63px] h-[calc(100dvh-63px)] max-h-[calc(100dvh-64px)] overflow-hidden z-6 bg-base-100 md:top-[64px]`}
-    >
-      <FilterDrawer setShow={setFilterOpened} />
-      <div
-        id="earthquackes-list"
-        className={`w-[100dvw] overflow-auto bg-base-100 animate-[--animate-drawer] md:w-[350px] md:left-0 md:top-[64px]`}
-      >
-        <ul className="list">
-          <li className="list-row font-bold">
-            <div className="list-col-grow flex justify-between items-center">
-              <span>LATEST EARTHQUAKES</span>
-              <button
-                onClick={() => setFilterOpened((prev) => !prev)}
-                className="btn btn-sm"
-                disabled={filterOpened}
-              >
-                <Filter size={15} />
-                <span>Filter</span>
-              </button>
-            </div>
-          </li>
-          {data.map((item) => {
-            return (
-              <li
-                className={
-                  activeListItem?.id == item.id ? "list-row active" : "list-row"
-                }
-                key={item.id}
-              >
-                <button
-                  onClick={() => selectItem(item)}
-                  className={`w-full cursor-pointer flex justify-between text-start list-col-grow bg-transparent`}
-                >
-                  <div className="flex flex-col gap-2">
-                    <div>{item.location}</div>
-                    <div className="text-[.75rem] text-gray-400 font-semibold">
-                      {formatDate(item.time)}
-                    </div>
-                  </div>
-                  <div className="font-bold">{item.magnitude.toFixed(2)}</div>
-                </button>
-              </li>
-            );
-          }) || null}
-        </ul>
-      </div>
-    </div>
-  );
-};
-
-const FilterDrawer = ({ setShow }) => {
-  const { initialFilterValues, filters, setFilters } = useData();
+const FilterDrawer = ({ setFilterOpened }) => {
+  const {
+    initialFilterValues,
+    filters,
+    setFilters,
+    setFilterApplied,
+  } = useData();
 
   const updateFilters = (item) => {
-    if (item.name == "maxradiuskm" && item.value > 20000) item.value = 20000;
+    if (item.name == "maxRadiusKm" && item.value > 20000) item.value = 20000;
 
     if (item.name == "latitude" && item.value < -90) item.value = -90;
     if (item.name == "latitude" && item.value > 90) item.value = 90;
@@ -86,13 +21,22 @@ const FilterDrawer = ({ setShow }) => {
     setFilters({ ...filters, [item.name]: item.value });
   };
 
+  const applyFilters = () => {
+    setFilterApplied(true);
+    setFilterOpened(false);
+  };
+
   return (
     <div
       className={`min-w-[100dvw] bg-base-100 p-4 md:w-[350px] overflow-x-hidden overflow-y-auto md:min-w-0`}
     >
       <div className="flex justify-between items-center">
         <span className="text-[.875rem] font-bold">FILTER OPTIONS</span>
-        <button onClick={() => setShow(false)} className="btn icon-btn">
+        <button
+          id="close-filters-drawer"
+          onClick={() => setFilterOpened(false)}
+          className="btn icon-btn h-[28px]"
+        >
           <X />
         </button>
       </div>
@@ -104,8 +48,8 @@ const FilterDrawer = ({ setShow }) => {
           <input
             type="datetime-local"
             className="input input-sm"
-            name="starttime"
-            value={filters.starttime}
+            name="startTime"
+            value={filters.startTime}
             onChange={(e) => updateFilters(e.target)}
           />
 
@@ -113,8 +57,8 @@ const FilterDrawer = ({ setShow }) => {
           <input
             type="datetime-local"
             className="input input-sm"
-            name="endtime"
-            value={filters.endtime}
+            name="endTime"
+            value={filters.endTime}
             onChange={(e) => updateFilters(e.target)}
           />
         </fieldset>
@@ -123,29 +67,29 @@ const FilterDrawer = ({ setShow }) => {
           <legend className="fieldset-legend">Magnitude</legend>
 
           <div>
-            <label className="label">{`Min - ${filters.minmagnitude}`}</label>
+            <label className="label">{`Min - ${filters.minMagnitude}`}</label>
             <input
               type="range"
               min="0"
               max="9"
               step=".1"
               className="range range-sm [--range-fill:0]"
-              name="minmagnitude"
-              value={filters.minmagnitude}
+              name="minMagnitude"
+              value={filters.minMagnitude}
               onChange={(e) => updateFilters(e.target)}
             />
           </div>
 
           <div>
-            <label className="label">{`Max - ${filters.maxmagnitude}`}</label>
+            <label className="label">{`Max - ${filters.maxMagnitude}`}</label>
             <input
               type="range"
               min="1"
               max="10"
               step=".1"
               className="range range-sm [--range-fill:0]"
-              name="maxmagnitude"
-              value={filters.maxmagnitude}
+              name="maxMagnitude"
+              value={filters.maxMagnitude}
               onChange={(e) => updateFilters(e.target)}
             />
           </div>
@@ -186,8 +130,8 @@ const FilterDrawer = ({ setShow }) => {
               max="20000"
               step="0.1"
               className="input input-sm"
-              name="maxradiuskm"
-              value={filters.maxradiuskm}
+              name="maxRadiusKm"
+              value={filters.maxRadiusKm}
               onChange={(e) => updateFilters(e.target)}
             />
             <div className="label p-2 bg-base-200 h-[32px] border-[1px] border-[rgba(0,0,0,0.2)] rounded-r-[4px] absolute right-0">
@@ -203,8 +147,8 @@ const FilterDrawer = ({ setShow }) => {
           <legend className="fieldset-legend">Order by</legend>
           <select
             className="select select-sm"
-            name="orderby"
-            value={filters.orderby}
+            name="orderBy"
+            value={filters.orderBy}
             onChange={(e) => updateFilters(e.target)}
           >
             <option value="time">Time</option>
@@ -222,7 +166,11 @@ const FilterDrawer = ({ setShow }) => {
         >
           Clear Filters
         </button>
-        <button type="submit" className="btn btn-outline btn-sm">
+        <button
+          onClick={() => applyFilters()}
+          type="submit"
+          className="btn btn-outline btn-sm"
+        >
           Apply
         </button>
       </div>
@@ -230,4 +178,4 @@ const FilterDrawer = ({ setShow }) => {
   );
 };
 
-export default ListDrawer;
+export default FilterDrawer;

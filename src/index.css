@@ -6,9 +6,9 @@
 }
 
 .active {
-  @apply bg-amber-500;
+  @apply bg-blue-600 text-base-200;
 }
 
 .icon-btn {
-  @apply bg-transparent border-0 outline-0 px-0 shadow-none;
+  @apply bg-transparent border-0 outline-0 px-0 shadow-none focus:border-2 focus:border-base-content;
 }

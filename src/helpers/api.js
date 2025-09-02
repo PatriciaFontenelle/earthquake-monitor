@@ -5,7 +5,7 @@ const api = axios.create({
   params: {
     format: "geojson",
     orderby: "time",
-    limit: 20,
+    limit: 50,
   },
 });
 
