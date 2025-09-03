@@ -19,7 +19,9 @@ export const useData = () => {
     filterApplied,
     setFilterApplied,
     fetchData,
-    removeFilters
+    removeFilters,
+    loading,
+    setLoading,
   } = context;
   return {
     data,
@@ -30,7 +32,9 @@ export const useData = () => {
     filterApplied,
     setFilterApplied,
     fetchData,
-    removeFilters
+    removeFilters,
+    loading,
+    setLoading,
   };
 };
 
@@ -52,10 +56,11 @@ export const DataProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState(initialFilterValues);
   const [filterApplied, setFilterApplied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
-    
+
     if (!filterApplied) {
       const getRealtimeData = setInterval(() => {
         fetchData();
@@ -73,6 +78,7 @@ export const DataProvider = ({ children }) => {
   };
 
   const fetchData = () => {
+    setLoading(true);
     const applyLocalFilter = filters.latitude && filters.longitude;
 
     api
@@ -101,6 +107,7 @@ export const DataProvider = ({ children }) => {
         });
 
         setData([...newData]);
+        setLoading(false);
       });
   };
 
@@ -115,7 +122,9 @@ export const DataProvider = ({ children }) => {
         filterApplied,
         setFilterApplied,
         fetchData,
-        removeFilters
+        removeFilters,
+        loading,
+        setLoading,
       }}
     >
       {children}

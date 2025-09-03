@@ -41,12 +41,12 @@ const NavLogo = ({ className = "" }) => {
     <div id="nav-logo" className={`w-30 ${className}`}>
       <img
         className="dark:hidden object-contain"
-        src="/assets/logo/DarkLogo.png"
+        src="assets/logo/DarkLogo.png"
         alt="Dark logo with a map marker and the words earthquake monitor written aside."
       />
       <img
         className="hidden dark:block object-contain"
-        src="/assets/logo/LightLogo.png"
+        src="assets/logo/LightLogo.png"
         alt="Dark logo with a map marker and the words earthquake monitor written aside."
       />
     </div>

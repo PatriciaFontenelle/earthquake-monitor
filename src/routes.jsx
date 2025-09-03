@@ -1,8 +1,8 @@
 import Navbar from "./components/Layout/Navbar";
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 import Home from "./pages/Home";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
         path: "/",
         element: <Navbar />,

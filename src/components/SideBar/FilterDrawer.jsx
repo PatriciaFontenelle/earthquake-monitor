@@ -28,19 +28,19 @@ const FilterDrawer = ({ setFilterOpened }) => {
 
   return (
     <div
-      className={`min-w-[100dvw] bg-base-100 p-4 md:w-[350px] overflow-x-hidden overflow-y-auto md:min-w-0`}
+      className={`p-4 max-h-[calc(100vh-64px)] overflow-y-auto w-[100vw] md:w-[350px]`}
     >
       <div className="flex justify-between items-center">
         <span className="text-[.875rem] font-bold">FILTER OPTIONS</span>
         <button
           id="close-filters-drawer"
           onClick={() => setFilterOpened(false)}
-          className="btn icon-btn h-[28px]"
+          className="btn icon-btn focused-btn h-[28px]"
         >
           <X />
         </button>
       </div>
-      <div>
+      <div className="flex flex-col items-center">
         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
           <legend className="fieldset-legend">Date</legend>
 
@@ -143,7 +143,7 @@ const FilterDrawer = ({ setFilterOpened }) => {
           </p>
         </fieldset>
 
-        <fieldset className="fieldset">
+        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
           <legend className="fieldset-legend">Order by</legend>
           <select
             className="select select-sm"

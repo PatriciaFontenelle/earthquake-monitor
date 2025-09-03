@@ -10,7 +10,7 @@ export const useNav = () => {
 };
 
 export const NavProvider = ({ children }) => {
-  const [listOpened, setListOpened] = useState(false);
+  const [listOpened, setListOpened] = useState(true);
   const [highlightedItem, setHighlightedItem] = useState(null);
 
   useEffect(() => {

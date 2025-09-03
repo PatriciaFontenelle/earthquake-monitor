@@ -4,21 +4,28 @@ import FilterDrawer from "./FilterDrawer";
 import ListDrawer from "./ListDrawer";
 
 const SideBar = () => {
-  const { setListOpened } = useNav();
+  const { listOpened } = useNav();
   const [filterOpened, setFilterOpened] = useState(false);
-  
+
   return (
     <div
       className={`${
-        filterOpened
-          ? "left-0"
-          : setListOpened
-          ? "left-0"
-          : "left-[-100dvw]"
-      } transition-[left] duration-300 ease-in-out flex absolute top-[63px] h-[calc(100dvh-63px)] max-h-[calc(100dvh-64px)] overflow-hidden z-6 bg-base-100 md:top-[64px]`}
+        !listOpened && filterOpened
+          ? "left-[-200vw] md:left-0"
+          : !listOpened && !filterOpened
+          ? "left-[-200vw] md:left-[-350px]"
+          : filterOpened
+          ? "left-[0]"
+          : "left-[-100vw] md:left-[-350px]"
+      } absolute transition-[left] ease-in-out duration-300 z-5 flex bg-base-100 overflow-hidden h-[calc(100dvh-63px)] w-[200vw] md:w-[700px]  md:h-[calc(100dvh-64px)]`}
     >
-      {filterOpened && <FilterDrawer setFilterOpened={setFilterOpened} />}
-      <ListDrawer filterOpened={filterOpened} setFilterOpened={setFilterOpened} />
+      <div className="w-[100vw] md:w-[350px]">
+        {filterOpened && <FilterDrawer setFilterOpened={setFilterOpened} />}
+      </div>
+      <ListDrawer
+        filterOpened={filterOpened}
+        setFilterOpened={setFilterOpened}
+      />
     </div>
   );
 };
