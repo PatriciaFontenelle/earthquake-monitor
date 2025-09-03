@@ -1,9 +1,9 @@
 import { Outlet } from "react-router";
-import { Menu } from "react-feather";
+import { Menu, X } from "react-feather";
 import { useNav } from "@/contexts/NavContext";
 
 const Navbar = () => {
-  const { setListOpened } = useNav();
+  const { setListOpened, listOpened } = useNav();
 
   return (
     <div className="max-h-[100dvh] overflow-hidden">
@@ -16,7 +16,7 @@ const Navbar = () => {
             className="icon-btn md:hidden"
             onClick={() => setListOpened((prev) => !prev)}
           >
-            <Menu />
+            {listOpened ? <X /> : <Menu />}
           </button>
           <NavLogo className="hidden md:block" />
         </div>
@@ -26,8 +26,7 @@ const Navbar = () => {
         <div
           id="nav-right"
           className="w-15 px-2 flex justify-end items-center md:w-fit md:px-4"
-        >
-        </div>
+        ></div>
       </div>
       <Outlet />
     </div>

@@ -38,35 +38,44 @@ https://patriciafontenelle.github.io/earthquake-monitor/
 - Tooltip on map markers for easiar comprehension of which data it represents;
 - Hidden filters to allow better visualization of the map and avoid interface polution;
 - Automatic color pallete adaption to the device's theme.
+
+    | Light Theme | Dark Theme |
+    |-------------------------------------------|-------------------------------------------|
+    | ![Light theme](<./screenshots/LightTheme.png>) | ![Dark theme](<./screenshots/DarkTheme.png>) |  
+
+
 - On mobile:
     - Map taking the whole screen for easier visualization;
     - List hidden on a side menu to keep the interface clean and intuitive;
 
-    | Light Theme | Dark Theme |
-    |-------------------------------------------|-------------------------------------------|
-    | ![Terminal](<./screenshots/LightTheme.png>) | ![Terminal](<./screenshots/DarkTheme.png>) |  
+    <img src="./screenshots/Mobile.gif"  height="500">
+
 
 ## Assumptions and limitations
 - Limitation:
     - The plaform doesn't provide a websocket API nor a webhook method that would allow the application to recieve data in realtime;
     - The GeoJSON component provided by React Leaflet component does not rerendered when state is changed, so when the data is updated, the map doesn't reflect the changes;
     - When zooming in on the map, the marker doesn't change size immediatly, so it takes the whole screen for a second as it shows on the first gif in this page;
+    - If the user moves the map to the sides, once the map starts to repeat locations that were already shown, they have no markers;
 - Assumptions:
     - Data is fetched every 2 minutes, which I assumed is a short enough interval to give the sansation that the data is fetched in realtime while keeping the amount of requests acceptable;
-    - I replaced de GeoJSON component by using a map function on the data array and rendering a marker component for each one of the items. Though I did find a workaround for the GeoJSON problem by forcing the component to rerender, I felt like the code would look cleaner and it would be safer to replace it with the individuals markers. 
+    - I replaced de GeoJSON component by using a map function on the data array and rendering a marker component for each one of the items. Though I did find a workaround for the GeoJSON problem by forcing the component to rerender, I felt like the code would look cleaner and it would be safer to replace it with the individuals markers;
 
 ## Implemented bonus
 - Accessibility:
     - Color contrast;
     - Keyboard navigation;
     - Alt attribute on logo;
+
+    ![Accessibility](/screenshots/Accessibility.gif)
+
+
 - Handle large datasets:
     - Limit API results to 50 items;
     - Use detailed filters to allow the users to search for more specific data without having to exceed the results limit;
 
-    | Keyboard Navigation            | Filters &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-    | ------------------------------ | ------------------------------------------ |
-    | ![Filters](</screenshots/Filters.gif>) | ![Accessibility](/screenshots/Accessibility.gif)|
+    ![Filters](</screenshots/Filters.gif>)
+
 
 ## Used technologies
 - API: USGS Earthquake Catalog. Learn more about it [here](https://earthquake.usgs.gov/fdsnws/event/1/).

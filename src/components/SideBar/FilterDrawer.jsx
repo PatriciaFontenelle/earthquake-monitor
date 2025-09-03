@@ -28,7 +28,7 @@ const FilterDrawer = ({ setFilterOpened }) => {
 
   return (
     <div
-      className={`p-4 max-h-[calc(100vh-64px)] overflow-y-auto w-[100vw] md:w-[350px]`}
+      className={`p-4 max-h-[calc(100dvh-64px)] overflow-y-auto w-[100vw] md:w-[350px]`}
     >
       <div className="flex justify-between items-center">
         <span className="text-[.875rem] font-bold">FILTER OPTIONS</span>

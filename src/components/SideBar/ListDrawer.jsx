@@ -24,7 +24,7 @@ const ListDrawer = ({ filterOpened, setFilterOpened }) => {
   return (
     <div
       id="earthquackes-list"
-      className={`max-h-[calc(100vh-64px)] overflow-y-auto w-[100vw] md:w-[350px]`}
+      className={`max-h-[calc(100dvh-64px)] overflow-y-auto w-[100vw] md:w-[350px]`}
     >
       {loading ? (
         <div className="h-full flex flex-col justify-center items-center gap-2">
@@ -82,6 +82,9 @@ const ListDrawer = ({ filterOpened, setFilterOpened }) => {
               </li>
             );
           }) || null}
+          <li>
+            <span className=" p-4 label text-[.75rem] opacity-30">End of results</span>
+          </li>
         </ul>
       )}
     </div>
