@@ -47,8 +47,11 @@ https://patriciafontenelle.github.io/earthquake-monitor/
 - On mobile:
     - Map taking the whole screen for easier visualization;
     - List hidden on a side menu to keep the interface clean and intuitive;
-
-    <img src="./screenshots/Mobile.gif"  height="500">
+  
+<br/>
+<p align="center">
+     <img src="./screenshots/Mobile.gif"  height="500">
+</p>
 
 
 ## Assumptions and limitations
