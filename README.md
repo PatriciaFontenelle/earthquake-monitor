@@ -35,7 +35,7 @@ https://patriciafontenelle.github.io/earthquake-monitor/
 
 ## Notes on design decisions
 - List and map side by side in order to allow simultanious visualization and comparison;
-- Tooltip on map markers for easiar comprehension of which data it represents;
+- Tooltip on map markers for easier comprehension of which data it represents;
 - Hidden filters to allow better visualization of the map and avoid interface polution;
 - Automatic color pallete adaption to the device's theme.
 
@@ -56,13 +56,13 @@ https://patriciafontenelle.github.io/earthquake-monitor/
 
 ## Assumptions and limitations
 - Limitation:
-    - The plaform doesn't provide a websocket API nor a webhook method that would allow the application to recieve data in realtime;
-    - The GeoJSON component provided by React Leaflet component does not rerendered when state is changed, so when the data is updated, the map doesn't reflect the changes;
-    - When zooming in on the map, the marker doesn't change size immediatly, so it takes the whole screen for a second as it shows on the first gif in this page;
+    - The USGS platform doesn't provide either a websocket API or a webhook method that would allow the application to recieve data in realtime;
+    - The GeoJSON component provided by React Leaflet does not rerender when state is changed, so when the data is updated, the map doesn't reflect the changes;
+    - When zooming in on the map, the marker doesn't change size immediatly, so it takes the whole screen for a second as it shows on the first gif in this readme file;
     - If the user moves the map to the sides, once the map starts to repeat locations that were already shown, they have no markers;
 - Assumptions:
-    - Data is fetched every 2 minutes, which I assumed is a short enough interval to give the sansation that the data is fetched in realtime while keeping the amount of requests acceptable;
-    - I replaced de GeoJSON component by using a map function on the data array and rendering a marker component for each one of the items. Though I did find a workaround for the GeoJSON problem by forcing the component to rerender, I felt like the code would look cleaner and it would be safer to replace it with the individuals markers;
+    - Data is fetched every 2 minutes, which I assumed is a short enough interval to give the sensation that the data is fetched in realtime while keeping the amount of requests acceptable;
+    - I replaced de GeoJSON component by using a map function on the data array and rendering a marker component for each one of the items. Though I did find a workaround for the GeoJSON problem by forcing the component to rerender, I felt like the code would look cleaner and it would be safer to replace it with the individual markers;
 
 ## Implemented bonus
 - Accessibility:
@@ -75,7 +75,7 @@ https://patriciafontenelle.github.io/earthquake-monitor/
 
 - Handle large datasets:
     - Limit API results to 50 items;
-    - Use detailed filters to allow the users to search for more specific data without having to exceed the results limit;
+    - Detailed filters available to allow the users to search for more specific data without having to exceed the results limit;
 
     ![Filters](</screenshots/Filters.gif>)
 
@@ -84,7 +84,7 @@ https://patriciafontenelle.github.io/earthquake-monitor/
 - API: USGS Earthquake Catalog. Learn more about it [here](https://earthquake.usgs.gov/fdsnws/event/1/).
 - Development:
     - ReactJS as the frontend framework;
-    - Vite as a build tool;
+    - Vite as the building tool;
     - Tailwind to simplify styling;
     - DaisyUI for components;
-    - Leaflet for map rendering;
+    - React Leaflet for map rendering;
